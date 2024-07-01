@@ -463,7 +463,6 @@ class DependencyGraph(object):
         def _fix_dependency_graph_non_recursive(dep, idxs):
             processing_stack = [(dep, idxs)]
             while len(processing_stack) > 0:
-                # print(len(processing_stack))
                 dep, idxs = processing_stack.pop(-1)
                 node, fn = dep.target, dep.handler
                 visited_node.add(node)

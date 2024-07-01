@@ -129,7 +129,6 @@ class MetaPruner:
                 self.channel_groups[m] = m.groups
             if isinstance(m, ops.TORCH_GROUPNORM):
                 self.channel_groups[m] = m.num_groups
-        print("********channel group finished.")
         
         if self.global_pruning: # TODO: Support both ch_groups and consecutive_groups in a single forward
             initial_total_channels = 0
@@ -176,21 +175,15 @@ class MetaPruner:
         self.current_step += 1
         if self.global_pruning:
             if interactive:
-                print("point 1")
                 return self.prune_global()
             else:
-                print("point 2")
                 for group in self.prune_global():
                     group.prune()
         else:
             if interactive:
-                print("point 3")
                 return self.prune_local()
             else:
-                print("point 4")
-                i = 0
                 for group in self.prune_local():
-                    print(f"step goup {i}")
                     group.prune()
 
     def estimate_importance(self, group, ch_groups=1, consecutive_groups=1):
@@ -241,10 +234,8 @@ class MetaPruner:
     def prune_local(self):
         if self.current_step > self.iterative_steps:
             return
-        j = 0
         for group in self.DG.get_all_groups(ignored_layers=self.ignored_layers, root_module_types=self.root_module_types, root_instances=self.root_instances):
             # check pruning rate
-            print(f"local inter {j}")
             if self._check_sparsity(group):
                 module = group[0][0].target.module
                 pruning_fn = group[0][0].handler
@@ -292,7 +283,6 @@ class MetaPruner:
                     module, pruning_fn, pruning_idxs.tolist())
                 if self.DG.check_pruning_group(group):
                     yield group
-                j += 1
 
     def prune_global(self):
         if self.current_step > self.iterative_steps:

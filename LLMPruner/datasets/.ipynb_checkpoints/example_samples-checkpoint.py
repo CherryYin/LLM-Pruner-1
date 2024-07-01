@@ -41,11 +41,9 @@ def get_bookcorpus(tokenizer, n_samples, seq_len):
     return torch.cat(tokenized_samples, dim=0 )
 
 def get_other_corpus(tokenizer, n_samples, seq_len):
-    print("start download")
     traindata = load_dataset(
         'izumi-lab/open-text-books', split='train'
     )
-    print("download finished")
     tokenized_samples, history = [], []
     for _ in range(n_samples):
         while True:
@@ -55,6 +53,7 @@ def get_other_corpus(tokenizer, n_samples, seq_len):
                 history.append(i)
                 break
         i = random.randint(0, tokenized_sample.input_ids.shape[1] - seq_len)
+        print(i)
         tokenized_samples.append(tokenized_sample.input_ids[:, i:i+seq_len])
     return torch.cat(tokenized_samples, dim=0 )
 
